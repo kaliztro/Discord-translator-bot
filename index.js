@@ -39,7 +39,7 @@ client.on('interactionCreate', async interaction => {
 const commands = [
     // {
     //     name: 'ping',
-    //     description: 'Replies with Pong!',
+    //     description: 'Replies with Pong!!',
     // },
     {
         name: 'personagem',
