@@ -1,1 +1,3 @@
-/node_modules
+node_modules/
+cooldownDB.sqlite
+src/config.js

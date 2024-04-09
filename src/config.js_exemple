@@ -1,0 +1,9 @@
+export const PREFIX = ["Bot Prefix"];
+export const BOT_TOKEN = "Bot Token";
+export const OWNER_IDS = ["Owner id"];
+export const BOT_ID = "Bot id";
+export const TRANSLATOR_TOKEN = "Google translator api token";  //https://console.developers.google.com/
+
+export const embed_color = "#FFF300";
+
+export default TRANSLATOR_TOKEN
