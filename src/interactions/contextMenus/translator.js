@@ -10,7 +10,7 @@ export const Context = {
         const texto = interaction.targetMessage;
         const traduzirPara = 'pt-br';   //TODO adicionar a opção para traduzir a mensagem para outro idioma
 
-        if (!texto.content.length >= 4096) {  //limite api 5000, limite do discord field 1024; description 4096
+        if (texto.content.length > 4096) {  //limite api 5000, limite do discord field 1024; description 4096
             return interaction.reply({ content: 'Oops, a mensagem é muito longa para traduzir. \n O máximo de caracteres que posso enviar é 4096, tente traduzir o texto em partes usando o comando /traduzir', ephemeral: true });
         }
 
