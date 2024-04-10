@@ -24,6 +24,10 @@ export const Slash = {
         const target = interaction.options.getString('traduzir_para');
         const traduzirPara = target ? target : 'pt-br';
 
+        if (texto.length > 1024) {  //limite api 5000 limite do discord 1024
+            return interaction.reply({ content: 'Oops, a mensagem é muito longa para traduzir. \n O máximo de caracteres que posso enviar é 1024, tente traduzir o texto em partes, copiando a metade da mensagem e colando no comando /traduzir', ephemeral: true });
+        }
+
         const regiao = {
             [`en`]: `:flag_us: EUA`, 
             [`de`]: `:flag_de: Deutsch `, 
