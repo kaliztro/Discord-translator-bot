@@ -1,3 +1,5 @@
 node_modules/
 cooldownDB.sqlite
 src/config.js
+.vscode
+discloud

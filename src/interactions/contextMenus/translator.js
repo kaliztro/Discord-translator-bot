@@ -8,9 +8,12 @@ export const Context = {
     run: async (interaction) => {
 
         const texto = interaction.targetMessage;
-        // const target = interaction.options.getString('traduzir_para');
-        // const traduzirPara = target ? target : 'pt-br';
         const traduzirPara = 'pt-br';   //TODO adicionar a opção para traduzir a mensagem para outro idioma
+
+        //TODO há limite especifico de caracteres para cada tipo de msg, Embed 1024 chat normal 2000, na embed deve ser validado se a soma do texto original e o traduzido ultra passa o valor máximo de 1024 caso isso ocorra enviar a embed apenas com a tradução caso seja maior enviar via chat normal 
+        if (texto.content.length > 1024) {  //limite api 5000 limite do discord 1024
+            return interaction.reply({ content: 'Oops, a mensagem é muito longa para traduzir. \n O máximo de caracteres que posso enviar é 1024, tente traduzir o texto em partes, copiando a metade da mensagem e colando no comando /traduzir', ephemeral: true });
+        }
 
         const regiao = {
             [`en`]: `:flag_us: EUA`,
