@@ -10,9 +10,8 @@ export const Context = {
         const texto = interaction.targetMessage;
         const traduzirPara = 'pt-br';   //TODO adicionar a opção para traduzir a mensagem para outro idioma
 
-        //TODO há limite especifico de caracteres para cada tipo de msg, Embed 1024 chat normal 2000, na embed deve ser validado se a soma do texto original e o traduzido ultra passa o valor máximo de 1024 caso isso ocorra enviar a embed apenas com a tradução caso seja maior enviar via chat normal 
-        if (texto.content.length > 1024) {  //limite api 5000 limite do discord 1024
-            return interaction.reply({ content: 'Oops, a mensagem é muito longa para traduzir. \n O máximo de caracteres que posso enviar é 1024, tente traduzir o texto em partes, copiando a metade da mensagem e colando no comando /traduzir', ephemeral: true });
+        if (!texto.content.length >= 4096) {  //limite api 5000, limite do discord field 1024; description 4096
+            return interaction.reply({ content: 'Oops, a mensagem é muito longa para traduzir. \n O máximo de caracteres que posso enviar é 4096, tente traduzir o texto em partes usando o comando /traduzir', ephemeral: true });
         }
 
         const regiao = {
@@ -26,7 +25,7 @@ export const Context = {
             [`ro`]: `:flag_ro: Româna `,
             [`vi`]: `:flag_vi: Tieng Viet `,
             [`cs`]: `:flag_cz: Cestina `,
-            [`pt-br`]: `:flag_br: Brasil `,
+            [`pt`]: `:flag_br: Brasil `,
             [`da`]: `:flag_dk: Dansk `,
             [`lt`]: `:flag_lt: lietuviskai `,
             [`hu`]: `:flag_hu: Magyar `,
@@ -68,7 +67,6 @@ export const Context = {
             const detectData = await detectResponse.json();
             const detectedSourceLanguage = detectData.data.detections[0][0].language;
 
-            // Traduzir o texto
             const translateResponse = await fetch(`https://translation.googleapis.com/language/translate/v2?key=${TRANSLATOR_TOKEN}`, {
                 method: 'POST',
                 body: JSON.stringify({
@@ -91,12 +89,18 @@ export const Context = {
             const translatedText = translateData.data.translations[0].translatedText;
 
             const idioma = regiao[detectedSourceLanguage] ? regiao[detectedSourceLanguage] : detectedSourceLanguage;
-            // Criar e enviar a resposta
+
             const embed = new EmbedBuilder()
-                .addFields({ name: '**Texto original**', value: texto.toString(), inline: false })
-                .addFields({ name: '**Texto traduzido**', value: translatedText.toString(), inline: false })
                 .addFields({ name: '**Idioma detectado**', value: idioma.toString(), inline: false })
                 .setColor("#FFF300");
+
+            if (texto.content.length <= 1024) {
+                embed.spliceFields(0, 0, { name: '**Texto original** <1024', value: texto.toString(), inline: false });
+                embed.spliceFields(1, 0, { name: '**Texto traduzido**', value: translatedText.toString(), inline: false  })
+            } else {
+                embed.setTitle('Texto traduzido');
+                embed.setDescription(translatedText.toString())
+            }
 
             startTyping(interaction.channel);
 
