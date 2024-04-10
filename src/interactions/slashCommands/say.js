@@ -37,7 +37,7 @@ export const Slash = {
 
         if (boolean === true){
             const embed = new EmbedBuilder()
-            .setTitle(texto)
+            .setDescription(texto)
             .setColor("#3086c9")
             canal.send({embeds: [embed]})
             .then(() => interaction.reply({ content: `Mensagem com embed enviada com sucesso no canal \`${canal.name}\`.`, ephemeral: true }))
