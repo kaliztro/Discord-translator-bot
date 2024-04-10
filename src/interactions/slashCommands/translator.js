@@ -24,8 +24,8 @@ export const Slash = {
         const target = interaction.options.getString('traduzir_para');
         const traduzirPara = target ? target : 'pt-br';
 
-        if (texto.length > 1024) {  //limite api 5000 limite do discord 1024
-            return interaction.reply({ content: 'Oops, a mensagem é muito longa para traduzir. \n O máximo de caracteres que posso enviar é 1024, tente traduzir o texto em partes, copiando a metade da mensagem e colando no comando /traduzir', ephemeral: true });
+        if (texto.length > 4096) {  //limite api 5000, limite do discord field 1024; description 4096
+            return interaction.reply({ content: 'Oops, a mensagem é muito longa para traduzir. \n O máximo de caracteres que posso enviar é 4096, tente traduzir o texto em partes usando o comando /traduzir', ephemeral: true });
         }
 
         const regiao = {
@@ -39,7 +39,7 @@ export const Slash = {
             [`ro`]: `:flag_ro: Româna `, 
             [`vi`]: `:flag_vi: Tieng Viet `, 
             [`cs`]: `:flag_cz: Cestina `,
-            [`pt-br`]: `:flag_br: Brasil `, 
+            [`pt`]: `:flag_br: Brasil `, 
             [`da`]: `:flag_dk: Dansk `, 
             [`lt`]: `:flag_lt: lietuviskai `, 
             [`hu`]: `:flag_hu: Magyar `, 
@@ -104,12 +104,18 @@ export const Slash = {
             const translatedText = translateData.data.translations[0].translatedText;
 
             const idioma = regiao[detectedSourceLanguage] ? regiao[detectedSourceLanguage] : detectedSourceLanguage;
-            // Criar e enviar a resposta
+
             const embed = new EmbedBuilder()
-                .addFields({ name: '**Texto original**', value: texto, inline: false })
-                .addFields({ name: '**Texto traduzido**', value: translatedText, inline: false })
                 .addFields({ name: '**Idioma detectado**', value: `${idioma}`, inline: false })
                 .setColor("#FFF300");
+
+            if (texto.length <= 1024) {
+                embed.spliceFields(0, 0, { name: '**Texto original**', value: texto, inline: false })
+                embed.spliceFields(1, 0, { name: '**Texto traduzido**', value: translatedText, inline: false })
+            } else {
+                embed.setTitle('Texto traduzido');
+                embed.setDescription(translatedText.toString())
+            }
 
             startTyping(interaction.channel);
 
