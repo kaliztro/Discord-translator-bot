@@ -44,10 +44,6 @@ export const Slash = {
         const texto = interaction.options.getString('texto');
         const target = interaction.options.get('traduzir_para');
 
-        let targetValidator = target === null ? 'pt-br' : target.value;
-
-        const traduzirPara = targetValidator;
-
         if (texto.length > 4096) {  //limite api 5000, limite do discord field 1024; description 4096
             return interaction.reply({ content: 'Oops, a mensagem é muito longa para traduzir. \n O máximo de caracteres que posso enviar é 4096, tente traduzir o texto em partes usando o comando /traduzir', ephemeral: true });
         }
@@ -103,6 +99,17 @@ export const Slash = {
 
             const detectData = await detectResponse.json();
             const detectedSourceLanguage = detectData.data.detections[0][0].language;
+
+            let traduzirPara = target === null ? 'pt-br' : target.value;
+
+            if(detectedSourceLanguage === 'pt' && traduzirPara === 'pt-br') {
+                traduzirPara = 'en' 
+            }
+
+            if(detectedSourceLanguage === 'pt' && traduzirPara === 'pt') {
+                return interaction.reply({ content: 'Não posso traduzir do Português para o Português!', ephemeral: true });
+            }
+
 
             // Traduzir o texto
             const translateResponse = await fetch(`https://translation.googleapis.com/language/translate/v2?key=${TRANSLATOR_TOKEN}`, {
